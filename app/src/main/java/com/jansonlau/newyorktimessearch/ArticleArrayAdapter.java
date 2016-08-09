@@ -46,6 +46,7 @@ public class ArticleArrayAdapter extends ArrayAdapter<Article> {
 
         // Declare and initialize tvTitle (headline)
         TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
+
         // Set tvTitle's text
         tvTitle.setText(article.getHeadLine());
 

@@ -4,9 +4,14 @@ package com.jansonlau.newyorktimessearch.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -48,9 +53,9 @@ public class SearchActivity extends AppCompatActivity {
 
     // Initialize all the different views
     public void setupViews() {
-        etQuery = (EditText) findViewById(R.id.etQuery);
+//        etQuery = (EditText) findViewById(R.id.etQuery);
+//        btnSearch = (Button) findViewById(R.id.btnSearch);
         gvResults = (GridView) findViewById(R.id.gvResults);
-        btnSearch = (Button) findViewById(R.id.btnSearch);
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(this, articles); // Initialize array adapter
         gvResults.setAdapter(adapter); // Bind grid view to array adapter
@@ -74,8 +79,36 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
-    public void onArticleSearch(View view) { // click handler for button
-        String query = etQuery.getText().toString(); // get string that was typed in
+    // Use the ActionBar SearchView as the query textfield instead of an EditText (Optional)
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_search, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // perform query here
+                onArticleSearch(query);
+
+                // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
+                // see https://code.google.com/p/android/issues/detail?id=24599
+                searchView.clearFocus();
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public void onArticleSearch(String query) { // click handler for button
+//        String query = etQuery.getText().toString(); // get string that was typed in
 
 //        Toast.makeText(this, "Searching for " + query, Toast.LENGTH_LONG).show(); // typed in word pops up for testing
 
