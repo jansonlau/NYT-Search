@@ -16,6 +16,8 @@ import android.webkit.WebViewClient;
 import com.jansonlau.newyorktimessearch.Article;
 import com.jansonlau.newyorktimessearch.R;
 
+import org.parceler.Parcels;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -30,7 +32,8 @@ public class ArticleActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Article article = (Article) getIntent().getSerializableExtra("article");
+//        Article article = (Article) getIntent().getSerializableExtra("article");
+        Article article = (Article) Parcels.unwrap(getIntent().getParcelableExtra("article")); // Optional (Turn Serializable to Parcelable on the receiving side)
 
 //        WebView webView = (WebView) findViewById(R.id.wvArticle);
 
@@ -44,7 +47,7 @@ public class ArticleActivity extends AppCompatActivity {
         wvArticle.loadUrl(article.getWebUrl());
     }
 
-    // Get access to share provider menu item in the Activity so we can attach the share intent later
+    // Get access to share provider menu item in the Activity so we can attach the share intent later (Share part of optional)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_article, menu);

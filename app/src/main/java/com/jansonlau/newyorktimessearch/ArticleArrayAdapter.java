@@ -11,7 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -55,7 +55,11 @@ public class ArticleArrayAdapter extends ArrayAdapter<Article> {
         String thumbnail = article.getThumbNail(); // Get reference to a thumbnail
 
         if (!TextUtils.isEmpty(thumbnail)) { // If thumbnail is not empty
-            Picasso.with(getContext()).load(thumbnail).into(imageView);
+            // Optional (Instead of using Picasso, I used Glide)
+            Glide.with(getContext()).load(thumbnail)
+                    .placeholder(R.drawable.ic_launcher)
+                    .error(R.drawable.ic_launcher)
+                    .into(imageView);
         }
 
         return convertView;

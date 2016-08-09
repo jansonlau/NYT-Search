@@ -28,6 +28,7 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -49,6 +50,7 @@ public class SearchActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setupViews(); // Create references to all the different views
+        topStories();
     }
 
     // Initialize all the different views
@@ -71,7 +73,8 @@ public class SearchActivity extends AppCompatActivity {
                 Article article = articles.get(position);
 
                 // Pass in that article into intent
-                i.putExtra("article", article);
+                // Optional (wrap your objects with Parcels.wrap())
+                i.putExtra("article", Parcels.wrap(article));
 
                 // Launch activity
                 startActivity(i);
@@ -129,6 +132,7 @@ public class SearchActivity extends AppCompatActivity {
                 JSONArray articleJsonResults = null;
 
                 try {
+                    adapter.clear();
                     // Go from JSONObject "response" to JSONArray of "docs"
                     // Put "docs" into articleJsonResults
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
@@ -136,6 +140,33 @@ public class SearchActivity extends AppCompatActivity {
                     adapter.addAll(Article.fromJSONArray(articleJsonResults)); // call fromJSONArray function
                     Log.d("DEBUG", articles.toString());
 //                    adapter.notifyDataSetChanged(); // Notify the adapter that something changed (Not needed after calling addAll on "adapter" and not "article"
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    // Display top stories on start up of app
+    public void topStories() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = "https://api.nytimes.com/svc/topstories/v2/home.json";
+
+        // To pass in query parameters, make a "params" object
+        RequestParams params = new RequestParams();
+        params.put("api-key", "9d729b440fcc44c3835812bc2f31c5bd"); // add api key as paramter
+
+        client.get(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                JSONArray articleJsonResults = null;
+
+                try {
+                    articleJsonResults = response.getJSONArray("results");
+//                    Log.d("DEBUG", articleJsonResults.toString());
+                    adapter.addAll(Article.fromJSONArrayTopStories(articleJsonResults)); // call fromJSONArray function
+//                    Log.d("DEBUG", articles.toString());
                 }
                 catch (JSONException e) {
                     e.printStackTrace();
