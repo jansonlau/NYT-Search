@@ -50,7 +50,7 @@ public class SearchActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setupViews(); // Create references to all the different views
-        topStories();
+        topStories(); // Show top stories
     }
 
     // Initialize all the different views
